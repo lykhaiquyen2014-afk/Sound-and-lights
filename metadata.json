@@ -1,0 +1,6 @@
+{
+  "name": "Nghiên Cứu Âm Thanh & Ánh Sáng",
+  "description": "Ứng dụng tương tác nghiên cứu chuyên sâu về âm thanh, ánh sáng và các ứng dụng thiết yếu trong cuộc sống với máy đo thời gian thực và trợ lý AI.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

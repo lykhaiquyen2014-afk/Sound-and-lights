@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <script>
+      // Compatibility patch for environments where window.fetch or Window.prototype.fetch only has a getter
+      (function() {
+        try {
+          var originalFetch = typeof window !== 'undefined' && window.fetch ? window.fetch.bind(window) : undefined;
+          var currentFetch = originalFetch;
+
+          // 1. Define setter on Window.prototype if needed
+          if (typeof Window !== 'undefined' && Window.prototype) {
+            var protoDesc = Object.getOwnPropertyDescriptor(Window.prototype, 'fetch');
+            if (protoDesc && protoDesc.get && !protoDesc.set) {
+              try {
+                Object.defineProperty(Window.prototype, 'fetch', {
+                  get: protoDesc.get,
+                  set: function(fn) {
+                    Object.defineProperty(this, 'fetch', {
+                      value: fn,
+                      writable: true,
+                      configurable: true,
+                      enumerable: true
+                    });
+                  },
+                  configurable: true,
+                  enumerable: true
+                });
+              } catch (_) {}
+            }
+          }
+
+          // 2. Define getter and setter on window instance
+          if (typeof window !== 'undefined') {
+            Object.defineProperty(window, 'fetch', {
+              get: function() {
+                return currentFetch;
+              },
+              set: function(fn) {
+                currentFetch = fn;
+              },
+              configurable: true,
+              enumerable: true
+            });
+          }
+
+          // 3. Define getter and setter on globalThis if distinct
+          if (typeof globalThis !== 'undefined' && globalThis !== window) {
+            try {
+              Object.defineProperty(globalThis, 'fetch', {
+                get: function() {
+                  return currentFetch;
+                },
+                set: function(fn) {
+                  currentFetch = fn;
+                },
+                configurable: true,
+                enumerable: true
+              });
+            } catch (_) {}
+          }
+        } catch (e) {
+          console.warn('Fetch compatibility polyfill:', e);
+        }
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nghiên Cứu Âm Thanh & Ánh Sáng</title>
+    <meta name="description" content="Ứng dụng tương tác nghiên cứu chuyên sâu về âm thanh, ánh sáng và các ứng dụng thiết yếu trong cuộc sống với máy đo thời gian thực và trợ lý AI." />
+    <meta property="og:title" content="Nghiên Cứu Âm Thanh & Ánh Sáng" />
+    <meta property="og:description" content="Ứng dụng tương tác nghiên cứu chuyên sâu về âm thanh, ánh sáng và các ứng dụng thiết yếu trong cuộc sống với máy đo thời gian thực và trợ lý AI." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-cyan-500/20 selection:text-cyan-300">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
